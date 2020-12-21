@@ -12,16 +12,18 @@
 //  3: other arduino boots and wire connects
 //     enable = true
 
+// TODO: Add back serial wire to communicate solved state
+
 // PIN Locations
 #define MAG1       2  // mag1 (red)
 #define MAG2       3  // mag2 (green)
 #define MAG3       4  // mag3 (blue)
 #define MAG4       5  // mag4 (yellow)
 
-#define LED1       6  // LED1 (red)
-#define LED2       7  // LED2 (green)
-#define LED3       8  // LED3 (blue)
-#define LED4       14 // LED4 (yellow)
+#define LED1       8  // LED1 (red)
+#define LED2       9  // LED2 (green)
+#define LED3       10 // LED3 (blue)
+#define LED4       11 // LED4 (yellow)
 
 // Globals
 bool enabled               = true;
@@ -68,7 +70,7 @@ void setupMags() {
 }
 
 void loop() {
-
+  
   if (!enabled) {
     return;
   }
