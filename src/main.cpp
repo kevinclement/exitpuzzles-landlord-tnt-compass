@@ -15,10 +15,10 @@
 // TODO: Add back serial wire to communicate solved state
 
 // PIN Locations
-#define MAG1       2  // mag1 (red)
-#define MAG2       3  // mag2 (green)
-#define MAG3       4  // mag3 (blue)
-#define MAG4       5  // mag4 (yellow)
+#define MAG1       4  // mag1 (red)
+#define MAG2       5  // mag2 (green)
+#define MAG3       6  // mag3 (blue)
+#define MAG4       7  // mag4 (yellow)
 
 #define LED1       8  // LED1 (red)
 #define LED2       9  // LED2 (green)
@@ -70,7 +70,7 @@ void setupMags() {
 }
 
 void loop() {
-  
+
   if (!enabled) {
     return;
   }
