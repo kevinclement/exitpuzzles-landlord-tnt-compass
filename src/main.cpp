@@ -12,13 +12,15 @@
 //  3: other arduino boots and wire connects
 //     enable = true
 
-// TODO: Add back serial wire to communicate solved state
+// TODO: Add back serial code to enable/disable from usb
 
-// PIN Locations
-#define MAG1       4  // mag1 (red)
-#define MAG2       5  // mag2 (green)
-#define MAG3       6  // mag3 (blue)
-#define MAG4       7  // mag4 (yellow)
+// NOTE: last time I did rewire I didn't study port mapping well enough
+// so its not purely sequential, mag 3 and 4 I had to swap to map properly
+//
+#define MAG1       4  // red    | South/SouthWest | Password "1" 
+#define MAG2       5  // green  | West            | Password "2" 
+#define MAG3       7  // blue   | North           | Password "8"
+#define MAG4       6  // yellow | East            | Password "4"
 
 #define LED1       8  // LED1 (red)
 #define LED2       9  // LED2 (green)
