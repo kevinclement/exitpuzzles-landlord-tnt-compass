@@ -21,8 +21,8 @@ void status() {
   Serial.println("status called");
 }
 
-void solve() {
-  Serial.println("solve called");
+void disable() {
+  Serial.println("disable called");
 }
 
 void debug() {
@@ -43,10 +43,10 @@ void setup() {
   led.setup();
   magnets.setup();
 
-  sm.registerCommand(SerialCommand("status",  's', &status,     "status",  "gets the status of device"));
-  sm.registerCommand(SerialCommand("solve",   'v', &solve,      "solve",   "force a puzzle solve of the device"));
-  sm.registerCommand(SerialCommand("debug",   'x', &debug,      "debug",   "toggle debug of device"));
-  sm.registerCommand(SerialCommand("reboot",  'r', &reboot,     "reboot",  "software reboot the device"));
+  sm.registerCommand(SerialCommand("status",  's', &status,     "status",    "gets the status of device"));
+  sm.registerCommand(SerialCommand("disable", 'd', &disable,    "disable",   "turn off magnets and lights.  reboot to re-enable."));
+  sm.registerCommand(SerialCommand("debug",   'x', &debug,      "debug",     "toggle debug of device"));
+  sm.registerCommand(SerialCommand("reboot",  'r', &reboot,     "reboot",    "software reboot the device"));
 
   sm.printHelp();
 

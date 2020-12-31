@@ -102,10 +102,13 @@ void SerialManager::printHelp() {
 
   for (int i=0; i<cmdIndex; i++) {
     Serial.print("  ");
+    Serial.print(commands[i].sCommand);
+    Serial.print(", ");
     Serial.print(commands[i].args);
     for(int j=commands[i].args.length(); j<longestCmd; j++) {
       Serial.print(" ");
     }
+
     Serial.print("- ");
     Serial.println(commands[i].desc);
   }
