@@ -65,12 +65,20 @@ void status() {
       "gitDate:%s,"
       "buildDate:%s,"
 
+      "red:%s,"
+      "green:%s,"
+      "blue:%s,"
+      "yellow:%s,"
       "enabled:%s,"
 
       "\r\n"
     , GIT_HASH,
       GIT_DATE,
       DATE_NOW,
+      led.state[0] ? "true" : "false",
+      led.state[1] ? "true" : "false",
+      led.state[2] ? "true" : "false",
+      led.state[3] ? "true" : "false",
       enabled ? "true" : "false"
 );
 
@@ -81,13 +89,13 @@ void disable() {
   Serial.println("Disabling device...");
   enabled = false;
   setState(-1);
-  status();
 }
 
 void enable() {
   Serial.println("Enabling device...");
   
-  // NOTE: intentionally not resetting state, it will take over from where it left off last
+  // NOTE: intentionally not resetting state
+  // it will take over from where it left off last
   enabled = true;
 
   status();
@@ -103,4 +111,6 @@ void setState(int index) {
     led.state[i] = i == index;
     magnets.state[i] = i == index;
   }
+
+  status();
 }
