@@ -1,17 +1,7 @@
 #include <Arduino.h>
 #include "version.h"
-
-// Old audio and wire commands:
-//  0: penalty/badSwitch: 
-//     audio.play("AhAhAh4.wav");
-//  1: fail:
-//     audio.play("e1m166.wav");
-//     enabled = false;
-//  2: win: 
-//     audio.play("sd10.wav");
-//     enabled = false;
-//  3: other arduino boots and wire connects
-//     enable = true
+#include "led.h"
+#include "magnets.h"
 
 // TODO: Add back serial code to enable/disable from usb
 
@@ -23,26 +13,20 @@
 #define MAG3       7  // blue   | North           | Password "8"
 #define MAG4       6  // yellow | East            | Password "4"
 
-#define LED1       8  // LED1 (red)
-#define LED2       9  // LED2 (green)
-#define LED3       10 // LED3 (blue)
-#define LED4       11 // LED4 (yellow)
+LED led;
 
 // Globals
 bool enabled               = true;
 unsigned long previousTime = 0;
 int stateChangeInterval    = 12000; // how much to wait between state chang (ms)
-bool ledState[]            = {false, false, false, false};
 bool magState[]            = {false, false, false, false};  // prob only need one array
 int stateIndex             = 0;
-int numberOfStates         = sizeof(ledState) / sizeof(bool);
+int numberOfStates         = sizeof(magState) / sizeof(bool);
 
 char mychar;
 
 // TODO: move to header
-void setupLed();
 void setupMags();
-void ledLoop();
 void magLoop();
 void serialLoop();
 
@@ -53,15 +37,11 @@ void setup() {
   Serial.println("Landlord compass device by kevinc...");
   Serial.println(getFullVersion("landlord-tnt-compass"));
   
-  setupLed();
+  led.setup();
   setupMags();
-}
 
-void setupLed() {
-  pinMode(LED1, OUTPUT);
-  pinMode(LED2, OUTPUT);
-  pinMode(LED3, OUTPUT);  
-  pinMode(LED4, OUTPUT);
+  // TODO:
+  //status();
 }
 
 void setupMags() {  
@@ -83,7 +63,7 @@ void loop() {
     previousTime = currentTime;
    
     for(int i=0; i < numberOfStates; i++) {
-      ledState[i] = i == stateIndex;
+      led.state[i] = i == stateIndex;
       magState[i] = i == stateIndex;
     }
 
@@ -91,17 +71,9 @@ void loop() {
     stateIndex = (stateIndex == numberOfStates - 1) ? 0 : stateIndex + 1;
   }
   
-  ledLoop();
+  led.handle();
   magLoop();
   serialLoop();
-}
-
-void ledLoop() {
-  
-  digitalWrite(LED1, ledState[0]);
-  digitalWrite(LED2, ledState[1]);
-  digitalWrite(LED3, ledState[2]);
-  digitalWrite(LED4, ledState[3]);
 }
 
 void magLoop() {
