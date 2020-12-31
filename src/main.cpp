@@ -10,7 +10,7 @@ Magnets magnets;
 SerialManager sm;
 
 // Globals
-bool enabled               = true;
+bool enabled               = false; // start turned off
 unsigned long previousTime = 0;
 int stateChangeInterval    = 12000; // how much to wait between state chang (ms)
 int stateIndex             = 0;
@@ -83,9 +83,6 @@ void status() {
   Serial.print(",enabled:");
   Serial.print(enabled ? "true" : "false");
   
-  // TODO: check if I can parse fine without this
-  Serial.print(",");
-
   Serial.println();
 }
 
