@@ -43,10 +43,10 @@ void setup() {
   led.setup();
   magnets.setup();
 
-  sm.registerCommand(SerialCommand("status",  's', &status,     "status",    "gets the status of device"));
-  sm.registerCommand(SerialCommand("disable", 'd', &disable,    "disable",   "turn off magnets and lights.  reboot to re-enable."));
-  sm.registerCommand(SerialCommand("debug",   'x', &debug,      "debug",     "toggle debug of device"));
-  sm.registerCommand(SerialCommand("reboot",  'r', &reboot,     "reboot",    "software reboot the device"));
+  sm.registerCommand(SerialCommand("status",  's', &status,   "gets the status of device"));
+  sm.registerCommand(SerialCommand("disable", 'd', &disable,  "turn off magnets and lights.  reboot to re-enable."));
+  sm.registerCommand(SerialCommand("debug",   'x', &debug,    "toggle debug of device"));
+  sm.registerCommand(SerialCommand("reboot",  'r', &reboot, "software reboot the device"));
 
   sm.printHelp();
 

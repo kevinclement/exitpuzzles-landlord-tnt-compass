@@ -16,7 +16,8 @@ void SerialManager::setup() {
   while (!Serial); // Wait untilSerial is ready 
 }
 void SerialManager::registerCommand(SerialCommand cmd) {
-  commands[cmdIndex++] = cmd;
+  commands[cmdIndex] = cmd;
+  cmdIndex = cmdIndex + 1;
 
   // check for duplicate command or short command
   for (int i=0; i<cmdIndex-1; i++) {
@@ -35,7 +36,7 @@ void SerialManager::registerCommand(SerialCommand cmd) {
     }
   }
 
-  unsigned int cmdLen = cmd.args.length() + 1;
+  unsigned int cmdLen = cmd.command.length() + 1;
   if (cmdLen > longestCmd) {
     longestCmd = cmdLen;
   }
@@ -98,14 +99,13 @@ void SerialManager::handle() {
 }
 
 void SerialManager::printHelp() {
-  Serial.println("Available commands:");
-
   for (int i=0; i<cmdIndex; i++) {
     Serial.print("  ");
     Serial.print(commands[i].sCommand);
     Serial.print(", ");
-    Serial.print(commands[i].args);
-    for(int j=commands[i].args.length(); j<longestCmd; j++) {
+    Serial.print(commands[i].command);
+
+    for(int j=commands[i].command.length(); j<longestCmd; j++) {
       Serial.print(" ");
     }
 

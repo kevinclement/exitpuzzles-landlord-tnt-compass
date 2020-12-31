@@ -4,11 +4,10 @@
 class SerialCommand {
   public:
     SerialCommand();
-    SerialCommand(String command, char sCommand, void (*cb)(int), String args, String desc);
+    SerialCommand(String command, char sCommand, void (*cb)(), String desc);
     String command;
     char sCommand;
     void (*cb)(int);
-    String args;
     String desc;
 
   private:
