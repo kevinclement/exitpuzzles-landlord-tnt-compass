@@ -5,8 +5,6 @@
 #include "magnets.h"
 #include "SerialManager.h"
 
-// TODO: Add back serial code to enable/disable from usb
-
 LED led;
 Magnets magnets;
 SerialManager sm;
@@ -29,10 +27,9 @@ void setup() {
   magnets.setup();
 
   sm.registerCommand(SerialCommand("status",  's', &status,   "gets the status of device"));
-  sm.registerCommand(SerialCommand("enable",  'e', &enable,  "turn on magnets and lights.  will take off from where it was when disabled."));
-  sm.registerCommand(SerialCommand("disable", 'd', &disable,  "turn off magnets and lights."));
-  sm.registerCommand(SerialCommand("debug",   'x', &debug,    "toggle debug of device"));
-  sm.registerCommand(SerialCommand("reboot",  'r', &reboot, "software reboot the device"));
+  sm.registerCommand(SerialCommand("enable",  'e', &enable,   "turn on magnets and lights.  will take off from where it was when disabled."));
+  sm.registerCommand(SerialCommand("disable", 'd', &disable,  "turn off magnets and lights"));
+  sm.registerCommand(SerialCommand("reboot",  'r', &reboot,   "software reboot the device"));
 
   sm.printHelp();
 
@@ -96,12 +93,9 @@ void enable() {
   status();
 }
 
-void debug() {
-  Serial.println("debug called");
-}
-
 void reboot() {
-  Serial.println("reboot called");
+  Serial.println("Rebooting...");
+  soft_restart();
 }
 
 void setState(int index) {
