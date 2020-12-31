@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "version.h"
+#include "main.h"
 #include "led.h"
 #include "magnets.h"
 #include "SerialManager.h"
@@ -17,22 +18,6 @@ int stateChangeInterval    = 12000; // how much to wait between state chang (ms)
 int stateIndex             = 0;
 int numberOfStates         = sizeof(magnets.state) / sizeof(bool);
 
-void status() {
-  Serial.println("status called");
-}
-
-void disable() {
-  Serial.println("disable called");
-}
-
-void debug() {
-  Serial.println("debug called");
-}
-
-void reboot() {
-  Serial.println("reboot called");
-}
-
 void setup() {
   Serial.begin(9600);
   Serial.setTimeout(10);
@@ -44,58 +29,84 @@ void setup() {
   magnets.setup();
 
   sm.registerCommand(SerialCommand("status",  's', &status,   "gets the status of device"));
-  sm.registerCommand(SerialCommand("disable", 'd', &disable,  "turn off magnets and lights.  reboot to re-enable."));
+  sm.registerCommand(SerialCommand("enable",  'e', &enable,  "turn on magnets and lights.  will take off from where it was when disabled."));
+  sm.registerCommand(SerialCommand("disable", 'd', &disable,  "turn off magnets and lights."));
   sm.registerCommand(SerialCommand("debug",   'x', &debug,    "toggle debug of device"));
   sm.registerCommand(SerialCommand("reboot",  'r', &reboot, "software reboot the device"));
 
   sm.printHelp();
 
-  // TODO:
-  //status();
+  status();
 }
 
 void loop() {
   sm.handle();
 
-  if (!enabled) {
-    return;
-  }
-
   // figure out if we need to change state
-  unsigned long currentTime = millis();
-  if (currentTime - previousTime > stateChangeInterval) {
-    previousTime = currentTime;
-   
-    for(int i=0; i < numberOfStates; i++) {
-      led.state[i] = i == stateIndex;
-      magnets.state[i] = i == stateIndex;
-    }
+  if (enabled) {
+    unsigned long currentTime = millis();
+    if (currentTime - previousTime > stateChangeInterval) {
+      previousTime = currentTime;
+    
+      setState(stateIndex);
 
-    // move the index for the next round
-    stateIndex = (stateIndex == numberOfStates - 1) ? 0 : stateIndex + 1;
+      // move the index for the next round
+      stateIndex = (stateIndex == numberOfStates - 1) ? 0 : stateIndex + 1;
+    }
   }
   
   led.handle();
   magnets.handle();
 }
 
-// void serialLoop() {
-//   // check if we need to read from serial
-//   if (Serial.available()) {
-//     char ch = Serial.read();
+void status() {
+  char cMsg[254];
 
-//     switch (ch) {
+  sprintf(cMsg, 
+    "status="
+      "version:%s,"
+      "gitDate:%s,"
+      "buildDate:%s,"
 
-//       case 'a':
-//         Serial.println("serial: a");        
-//         break;      
-//       case 'x':
-//         Serial.println("serial: exit");
-//         enabled = false;
-//         break;
-      
-//       default:        
-//       break;
-//     }
-//   }
-// }
+      "enabled:%s,"
+
+      "\r\n"
+    , GIT_HASH,
+      GIT_DATE,
+      DATE_NOW,
+      enabled ? "true" : "false"
+);
+
+  sm.print(cMsg);
+}
+
+void disable() {
+  Serial.println("Disabling device...");
+  enabled = false;
+  setState(-1);
+  status();
+}
+
+void enable() {
+  Serial.println("Enabling device...");
+  
+  // NOTE: intentionally not resetting state, it will take over from where it left off last
+  enabled = true;
+
+  status();
+}
+
+void debug() {
+  Serial.println("debug called");
+}
+
+void reboot() {
+  Serial.println("reboot called");
+}
+
+void setState(int index) {
+  for(int i=0; i < numberOfStates; i++) {
+    led.state[i] = i == index;
+    magnets.state[i] = i == index;
+  }
+}
