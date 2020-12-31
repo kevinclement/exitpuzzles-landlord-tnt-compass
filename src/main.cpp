@@ -2,11 +2,13 @@
 #include "version.h"
 #include "led.h"
 #include "magnets.h"
+#include "SerialManager.h"
 
 // TODO: Add back serial code to enable/disable from usb
 
 LED led;
 Magnets magnets;
+SerialManager sm;
 
 // Globals
 bool enabled               = true;
@@ -15,10 +17,21 @@ int stateChangeInterval    = 12000; // how much to wait between state chang (ms)
 int stateIndex             = 0;
 int numberOfStates         = sizeof(magnets.state) / sizeof(bool);
 
-char mychar;
+void status() {
+  Serial.println("status called");
+}
 
-// TODO: move to header
-void serialLoop();
+void solve() {
+  Serial.println("solve called");
+}
+
+void debug() {
+  Serial.println("debug called");
+}
+
+void reboot() {
+  Serial.println("reboot called");
+}
 
 void setup() {
   Serial.begin(9600);
@@ -30,11 +43,19 @@ void setup() {
   led.setup();
   magnets.setup();
 
+  sm.registerCommand(SerialCommand("status",  's', &status,     "status",  "gets the status of device"));
+  sm.registerCommand(SerialCommand("solve",   'v', &solve,      "solve",   "force a puzzle solve of the device"));
+  sm.registerCommand(SerialCommand("debug",   'x', &debug,      "debug",   "toggle debug of device"));
+  sm.registerCommand(SerialCommand("reboot",  'r', &reboot,     "reboot",  "software reboot the device"));
+
+  sm.printHelp();
+
   // TODO:
   //status();
 }
 
 void loop() {
+  sm.handle();
 
   if (!enabled) {
     return;
@@ -56,26 +77,25 @@ void loop() {
   
   led.handle();
   magnets.handle();
-  serialLoop();
 }
 
-void serialLoop() {
-  // check if we need to read from serial
-  if (Serial.available()) {
-    char ch = Serial.read();
+// void serialLoop() {
+//   // check if we need to read from serial
+//   if (Serial.available()) {
+//     char ch = Serial.read();
 
-    switch (ch) {
+//     switch (ch) {
 
-      case 'a':
-        Serial.println("serial: a");        
-        break;      
-      case 'x':
-        Serial.println("serial: exit");
-        enabled = false;
-        break;
+//       case 'a':
+//         Serial.println("serial: a");        
+//         break;      
+//       case 'x':
+//         Serial.println("serial: exit");
+//         enabled = false;
+//         break;
       
-      default:        
-      break;
-    }
-  }
-}
+//       default:        
+//       break;
+//     }
+//   }
+// }
