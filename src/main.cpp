@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "version.h"
 
 // Old audio and wire commands:
 //  0: penalty/badSwitch: 
@@ -39,7 +40,6 @@ int numberOfStates         = sizeof(ledState) / sizeof(bool);
 char mychar;
 
 // TODO: move to header
-void setupSerial();
 void setupLed();
 void setupMags();
 void ledLoop();
@@ -47,14 +47,14 @@ void magLoop();
 void serialLoop();
 
 void setup() {
-  setupSerial();
+  Serial.begin(9600);
+  Serial.setTimeout(10);
+
+  Serial.println("Landlord compass device by kevinc...");
+  Serial.println(getFullVersion("landlord-tnt-compass"));
+  
   setupLed();
   setupMags();
-}
-
-void setupSerial() {
-  Serial.begin(9600);
-  while (!Serial); // Wait untilSerial is ready 
 }
 
 void setupLed() {
