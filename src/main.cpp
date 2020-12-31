@@ -5,29 +5,19 @@
 
 // TODO: Add back serial code to enable/disable from usb
 
-// NOTE: last time I did rewire I didn't study port mapping well enough
-// so its not purely sequential, mag 3 and 4 I had to swap to map properly
-//
-#define MAG1       4  // red    | South/SouthWest | Password "1" 
-#define MAG2       5  // green  | West            | Password "2" 
-#define MAG3       7  // blue   | North           | Password "8"
-#define MAG4       6  // yellow | East            | Password "4"
-
 LED led;
+Magnets magnets;
 
 // Globals
 bool enabled               = true;
 unsigned long previousTime = 0;
 int stateChangeInterval    = 12000; // how much to wait between state chang (ms)
-bool magState[]            = {false, false, false, false};  // prob only need one array
 int stateIndex             = 0;
-int numberOfStates         = sizeof(magState) / sizeof(bool);
+int numberOfStates         = sizeof(magnets.state) / sizeof(bool);
 
 char mychar;
 
 // TODO: move to header
-void setupMags();
-void magLoop();
 void serialLoop();
 
 void setup() {
@@ -38,17 +28,10 @@ void setup() {
   Serial.println(getFullVersion("landlord-tnt-compass"));
   
   led.setup();
-  setupMags();
+  magnets.setup();
 
   // TODO:
   //status();
-}
-
-void setupMags() {  
-  pinMode(MAG1, OUTPUT);
-  pinMode(MAG2, OUTPUT);
-  pinMode(MAG3, OUTPUT);
-  pinMode(MAG4, OUTPUT);
 }
 
 void loop() {
@@ -64,7 +47,7 @@ void loop() {
    
     for(int i=0; i < numberOfStates; i++) {
       led.state[i] = i == stateIndex;
-      magState[i] = i == stateIndex;
+      magnets.state[i] = i == stateIndex;
     }
 
     // move the index for the next round
@@ -72,16 +55,8 @@ void loop() {
   }
   
   led.handle();
-  magLoop();
+  magnets.handle();
   serialLoop();
-}
-
-void magLoop() {
-  
-  digitalWrite(MAG1, magState[0]);
-  digitalWrite(MAG2, magState[1]);
-  digitalWrite(MAG3, magState[2]);
-  digitalWrite(MAG4, magState[3]);
 }
 
 void serialLoop() {
