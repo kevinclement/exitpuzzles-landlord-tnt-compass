@@ -57,32 +57,36 @@ void loop() {
 }
 
 void status() {
-  char cMsg[254];
+  Serial.print("status=");
+  
+  Serial.print("version:");
+  Serial.print(GIT_HASH);
+  
+  Serial.print(",gitDate:");
+  Serial.print(GIT_DATE);
 
-  sprintf(cMsg, 
-    "status="
-      "version:%s,"
-      "gitDate:%s,"
-      "buildDate:%s,"
+  Serial.print(",buildDate:");
+  Serial.print(DATE_NOW);
 
-      "red:%s,"
-      "green:%s,"
-      "blue:%s,"
-      "yellow:%s,"
-      "enabled:%s,"
+  Serial.print(",red:");
+  Serial.print(led.state[0] ? "true" : "false");
 
-      "\r\n"
-    , GIT_HASH,
-      GIT_DATE,
-      DATE_NOW,
-      led.state[0] ? "true" : "false",
-      led.state[1] ? "true" : "false",
-      led.state[2] ? "true" : "false",
-      led.state[3] ? "true" : "false",
-      enabled ? "true" : "false"
-);
+  Serial.print(",green:");
+  Serial.print(led.state[1] ? "true" : "false");
 
-  sm.print(cMsg);
+  Serial.print(",blue:");
+  Serial.print(led.state[2] ? "true" : "false");
+
+  Serial.print(",yellow:");
+  Serial.print(led.state[3] ? "true" : "false");
+
+  Serial.print(",enabled:");
+  Serial.print(enabled ? "true" : "false");
+  
+  // TODO: check if I can parse fine without this
+  Serial.print(",");
+
+  Serial.println();
 }
 
 void disable() {

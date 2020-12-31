@@ -42,17 +42,6 @@ void SerialManager::registerCommand(SerialCommand cmd) {
   }
 }
 
-void SerialManager::print(const char *fmt, ...) {
-  char buf[256];     // resulting string limited to 128 chars
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buf, 256, fmt, args);
-  va_end(args);
-
-  // print to serial
-  Serial.print(buf);
-}
-
 void SerialManager::handle() {
   if (!Serial.available()) {
     return;
@@ -65,32 +54,21 @@ void SerialManager::handle() {
   Serial.println("' command");
 
   String command = msg;
-  int value = -1;
-
-  // check if we need to split on space for advance commands
-  for (int i = 0; i <= msg.length(); i++) {
-    if (msg.charAt(i) == ' ') {
-      command = msg.substring(0, i);
-      value = msg.substring(i+1, msg.length()).toInt();
-    }
-  }
-
+  
   bool foundMatch = false;
   bool help = false;
   for (int i=0; i<cmdIndex; i++) {
     if (command == commands[i].command || (command.length() == 1 && command[0] == commands[i].sCommand)) {
       foundMatch = true;
-      commands[i].cb(value);
+      commands[i].cb();
     } else if (command == "help" || command == "?") {
       foundMatch = help = true;
     }
   }
 
   if (!foundMatch) {
-    int str_len = command.length() + 1; 
-    char char_array[str_len];
-    command.toCharArray(char_array, str_len);
-    print("unknown command: %s%s", char_array, CRLF);
+    Serial.print("unknown command: ");
+    Serial.println(command);
   }
 
   if (help) {

@@ -7,7 +7,6 @@ public:
   void setup();
   void registerCommand(SerialCommand cmd);
   void handle();
-  void print(const char *fmt, ...);
   void printHelp();
 
 private:
