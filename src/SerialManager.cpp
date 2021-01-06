@@ -20,7 +20,7 @@ void SerialManager::registerCommand(SerialCommand cmd) {
   cmdIndex = cmdIndex + 1;
 
   // check for duplicate command or short command
-  for (int i=0; i<cmdIndex-1; i++) {
+  for (unsigned int i=0; i<cmdIndex-1; i++) {
     if (cmd.command == commands[i].command) {
       Serial.print("WARNING: registered two commands with the same command, '");
       Serial.print(cmd.command);
@@ -57,7 +57,7 @@ void SerialManager::handle() {
   
   bool foundMatch = false;
   bool help = false;
-  for (int i=0; i<cmdIndex; i++) {
+  for (unsigned int i=0; i<cmdIndex; i++) {
     if (command == commands[i].command || (command.length() == 1 && command[0] == commands[i].sCommand)) {
       foundMatch = true;
       commands[i].cb();
@@ -77,13 +77,13 @@ void SerialManager::handle() {
 }
 
 void SerialManager::printHelp() {
-  for (int i=0; i<cmdIndex; i++) {
+  for (unsigned int i=0; i<cmdIndex; i++) {
     Serial.print("  ");
     Serial.print(commands[i].sCommand);
     Serial.print(", ");
     Serial.print(commands[i].command);
 
-    for(int j=commands[i].command.length(); j<longestCmd; j++) {
+    for(unsigned int j=commands[i].command.length(); j<longestCmd; j++) {
       Serial.print(" ");
     }
 

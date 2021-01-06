@@ -10,11 +10,11 @@ Magnets magnets;
 SerialManager sm;
 
 // Globals
-bool enabled               = false; // start turned off
-unsigned long previousTime = 0;
-int stateChangeInterval    = 12000; // how much to wait between state chang (ms)
-int stateIndex             = 0;
-int numberOfStates         = sizeof(magnets.state) / sizeof(bool);
+bool enabled                     = false; // start turned off
+unsigned long previousTime       = 0;
+unsigned int stateChangeInterval = 12000; // how much to wait between state chang (ms)
+int stateIndex                   = 0;
+int numberOfStates               = sizeof(magnets.state) / sizeof(bool);
 
 void setup() {
   Serial.begin(9600);
