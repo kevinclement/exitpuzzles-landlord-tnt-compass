@@ -28,7 +28,8 @@ void setup() {
 
   sm.registerCommand(SerialCommand("status",  's', &status,   "gets the status of device"));
   sm.registerCommand(SerialCommand("enable",  'e', &enable,   "turn on magnets and lights.  will take off from where it was when disabled."));
-  sm.registerCommand(SerialCommand("disable", 'd', &disable,  "turn off magnets and lights"));
+  sm.registerCommand(SerialCommand("disable", 'd', &disable,  "stop changing magnet and led state"));
+  sm.registerCommand(SerialCommand("off",     'o', &off,      "turn off magnet and led completely"));
   sm.registerCommand(SerialCommand("reboot",  'r', &reboot,   "software reboot the device"));
 
   sm.printHelp();
@@ -38,6 +39,10 @@ void setup() {
 
 void loop() {
   sm.handle();
+
+  if (!enabled) {
+    return;
+  }
 
   // figure out if we need to change state
   if (enabled) {
@@ -89,7 +94,6 @@ void status() {
 void disable() {
   Serial.println("Disabling device...");
   enabled = false;
-  setState(-1);
 }
 
 void enable() {
@@ -100,6 +104,14 @@ void enable() {
   enabled = true;
 
   status();
+}
+
+void off() {
+  // just make sure enabled is also off
+  enabled = false;
+  setState(-1);
+  led.handle();
+  magnets.handle();
 }
 
 void reboot() {

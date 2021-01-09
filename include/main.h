@@ -5,6 +5,7 @@
 void status();
 void disable();
 void enable();
+void off();
 void reboot();
 void setState(int);
 
